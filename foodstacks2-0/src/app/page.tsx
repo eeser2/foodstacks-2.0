@@ -3,13 +3,15 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main>
-      <div>Main Page</div>
+      <div>Welcome to Foodstacks!!!</div>
       <button>
-        <Link href="/description">description</Link>
+        <Link href="/description">View Details</Link>
       </button>
       <br></br>
+      <button>Recommend</button>
+      <br></br>
       <button>
-        <Link href="/user_settings">settings</Link>
+        <Link href="/user_settings">Change User Preferences</Link>
       </button>
     </main>
   );
