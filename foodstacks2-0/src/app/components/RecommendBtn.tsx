@@ -22,8 +22,6 @@ export default function RecommendBtn() {
 
       console.log("Fetched preferences:", preferences);
 
-      // Separate the preferences into typeOfFood, location, and distance
-      const { typeOfFood, location, distance } = preferences;
       // Step 2: Use preferences to send a POST request to the `get_info` route
       const infoResponse = await fetch("/get_info", {
         method: "POST",
