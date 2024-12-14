@@ -1,27 +1,73 @@
 "use client";
 
-import Link from "next/link";
-import React, { useState } from "react";
-// import RangeSlider from "react-range-slider-input";
-// import "react-range-slider-input/dist/style.css";
+import React, { useState, useEffect } from "react";
 import { Slider } from "@nextui-org/slider";
 import { useRouter } from "next/navigation";
 
 const Preferences = () => {
-  const [typeOfFood, setTypeOfFood] = useState('');
-  const [location, setLocation] = useState('');
-  const [sliderValue, setSliderValue] = useState(10);
+  const [typeOfFood, setTypeOfFood] = useState("");
+  const [location, setLocation] = useState("");
+  const [distance, setDistance] = useState(1);
+  const [data, setData] = useState<{
+    typeOfFood: string;
+    location: string;
+    distance: number;
+  } | null>(null);
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/db.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        setTypeOfFood(data.typeOfFood || ""); // Set initial state from fetched data
+        setLocation(data.location || ""); // Set initial state from fetched data
+        setDistance(data.distance || 1); // Set initial state from fetched data
+        setLoading(false);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
 
   const router = useRouter();
 
   const handleSliderChange = (value: number) => {
-    setSliderValue(value);
+    setDistance(value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/?typeOfFood=${typeOfFood}&location=${location}&distance=${sliderValue}`);
+
+    try {
+      const response = await fetch("/write_to_db", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          typeOfFood,
+          location,
+          distance,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result.message); // Success message
+        router.push(
+          `/?typeOfFood=${typeOfFood}&location=${location}&distance=${distance}`
+        );
+      } else {
+        const error = await response.json();
+        console.error("Error:", error.error);
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Show a loading state while data is being fetched
+  }
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen flex items-center justify-center">
@@ -67,32 +113,21 @@ const Preferences = () => {
           >
             Distance:
           </label>
-          {/* <RangeSlider
-            min="0"
-            max="50"
-            step="1"
-            value={sliderValue}
-            onInput={handleSliderChange}
-            className="w-full"
-            id="location-slider"
-          /> */}
-          <Slider 
-            step={1} 
-            maxValue={50} 
-            minValue={1} 
+          <Slider
+            step={1}
+            maxValue={50}
+            minValue={1}
+            value={distance}
             onChange={handleSliderChange}
             className="max-w-md"
             id="location-slider"
           />
-          <div className="text-gray-700 mt-2">
-            {sliderValue} miles
-          </div>
+          <div className="text-gray-700 mt-2">{distance} miles</div>
         </div>
-        <button type="submit" className="text-black btn btn-primary">Save</button>
+        <button type="submit" className="text-black btn btn-primary">
+          Save
+        </button>
       </form>
-      {/* <div className="block text-gray-700 font-medium">
-        <Link href="/">Save</Link>
-      </div> */}
     </div>
   );
 };
