@@ -16,7 +16,7 @@ const Preferences = () => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/db.json")
+    fetch("/get_preferences")
       .then((res) => res.json())
       .then((data) => {
         setData(data);
