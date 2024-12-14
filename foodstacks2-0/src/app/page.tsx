@@ -3,18 +3,19 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import RecommendBtn from "@/app/components/RecommendBtn";
 
 export default function Home() {
   const searchParams = useSearchParams();
-  const [food, setFood] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
+  const [food, setFood] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
   const [distance, setDistance] = useState<number>(0);
 
-   useEffect(() => {
+  useEffect(() => {
     // Get query parameters directly using searchParams
-    const typeOfFood = searchParams.get('typeOfFood');
-    const location = searchParams.get('location');
-    const distance = searchParams.get('distance');
+    const typeOfFood = searchParams.get("typeOfFood");
+    const location = searchParams.get("location");
+    const distance = searchParams.get("distance");
 
     // If all parameters are found, set them in state
     if (typeOfFood && location && distance) {
@@ -38,7 +39,7 @@ export default function Home() {
         <Link href="/description">View Details</Link>
       </button>
       <br></br>
-      <button>Recommend</button>
+      <RecommendBtn />
       <br></br>
       <button>
         <Link href="/user_settings">Change User Preferences</Link>
