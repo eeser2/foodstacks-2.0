@@ -15,19 +15,15 @@ export async function POST(req: Request) {
   // Create a search query based on the type of food, location, and distance
   const searchQuery = `${typeOfFood} near ${location} within ${distance}`;
   const data = await fetch(
-    "https://api.content.tripadvisor.com/api/v1/location/search",
+    `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${searchQuery}&category=${category}&address=${address}&language=en`,
     {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-        key: apiKey,
-        searchQuery: searchQuery,
-        category: category,
-        address: address,
       },
     }
-  );
-
+  ).then((res) => res.json());
+  console.log("DATA:");
   console.log(data);
   return Response.json({ data });
 }
