@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const { typeOfFood, location, distance } = body;
 
     // Define the path to the database file
-    const filePath = path.join(process.cwd(), "public", "db.json");
+    const filePath = path.join(process.cwd(), "db.json");
 
     // Read existing data from the file
     const existingData = JSON.parse(await fs.readFile(filePath, "utf8"));
