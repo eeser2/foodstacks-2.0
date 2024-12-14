@@ -3,10 +3,9 @@ import { NextResponse } from "next/server";
 import path from "path";
 
 export async function POST(req: Request) {
-  const apiKey = await fs.readFile(
-    path.join(process.cwd(), "config.json"),
-    "utf8"
-  );
+  const apiKey = await fs
+    .readFile(path.join(process.cwd(), "config.json"), "utf8")
+    .then((data) => JSON.parse(data).apiKey);
   // Get the payload from the request
   const { typeOfFood, location, distance } = await req.json();
 
