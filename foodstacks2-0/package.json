@@ -20,6 +20,7 @@
     "react-range-slider-input": "^3.0.7"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.58.1",
     "@types/next": "^9.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
