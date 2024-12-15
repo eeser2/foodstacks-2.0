@@ -6,11 +6,13 @@ export default function RecommendBtn() {
   const [isLoading, setIsLoading] = useState(false);
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [imageSrc, setImageSrc] = useState<string>(""); // Store the restaurant image URL
 
   const handleRecommend = async () => {
     setIsLoading(true);
     setError(null);
     setRecommendation(null);
+    setImageSrc(""); // Reset the image when fetching starts
     try {
       // Step 1: Fetch user preferences from the `get_preferences` route
       const preferencesResponse = await fetch("/get_preferences");
@@ -61,6 +63,27 @@ export default function RecommendBtn() {
       }
 
       console.log("Added location to database:", location);
+
+      // Step 4: Fetch the image of the recommended restaurant
+      const imageResponse = await fetch("/get_restaurant_img", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          location_id: locationId,
+        }),
+      });
+
+      if (!imageResponse.ok) {
+        throw new Error("Failed to fetch restaurant image.");
+      }
+
+      const image = await imageResponse.json();
+      console.log("Received image:", image);
+
+      // Set the image URL
+      setImageSrc(image.imageSrc);
     } catch (err) {
       console.error(err);
       setError(
@@ -86,6 +109,14 @@ export default function RecommendBtn() {
         <div className="mt-2 text-green-600">{recommendation}</div>
       )}
       {error && <div className="mt-2 text-red-600">{error}</div>}
+      {/* Render the image only when an image URL is set */}
+      {imageSrc && (
+        <img
+          src={imageSrc}
+          alt="Recommended Restaurant"
+          className="mt-4 w-64 h-64 object-cover rounded"
+        />
+      )}
     </div>
   );
 }

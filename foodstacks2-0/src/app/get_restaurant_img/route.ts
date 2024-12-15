@@ -7,16 +7,11 @@ export async function POST(req: Request) {
     const apiKey = await fs
       .readFile(path.join(process.cwd(), "config.json"), "utf8")
       .then((data) => JSON.parse(data).apiKey);
-
     // Get the payload from the request
-    const { typeOfFood, location, distance } = await req.json();
-    const category = "restaurants";
-    const address = location;
-
+    const { location_id } = await req.json();
     // Create a search query based on the type of food, location, and distance
-    const searchQuery = `${typeOfFood} near ${location} within ${distance}`;
     const response = await fetch(
-      `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${searchQuery}&category=${category}&address=${address}&language=en`,
+      `https://api.content.tripadvisor.com/api/v1/location/${location_id}/photos?key=${apiKey}&language=en`,
       {
         method: "GET",
         headers: {
@@ -26,29 +21,17 @@ export async function POST(req: Request) {
     );
 
     const { data } = await response.json();
-
-    // Check if data array is empty
-    if (!data || data.length === 0) {
-      console.warn("No results found for the given query.");
-      return NextResponse.json(
-        {
-          error: "No restaurants found matching your criteria.",
-        },
-        { status: 404 }
-      );
-    }
-
-    // Select a random restaurant from the results
+    // Data contains some attributes and then an "images" object.
+    // We want to get images.medium.url from the data object.
     const randomIndex = Math.floor(Math.random() * data.length);
     const randomPick = data[randomIndex];
-    const id = randomPick.location_id;
-
+    console.log("Random Pick:", randomPick);
+    const imageSrc = randomPick.images.medium.url;
     return NextResponse.json({
-      message: `${randomPick.name}`,
-      data: randomPick,
+      imageSrc,
     });
   } catch (error) {
-    console.error("Error in /get_info:", error);
+    console.error("Error in /get_restaurant_img:", error);
     return NextResponse.json(
       { error: "An internal error occurred while processing the request." },
       { status: 500 }
