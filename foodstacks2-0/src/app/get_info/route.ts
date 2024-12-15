@@ -6,47 +6,48 @@ export async function POST(req: Request) {
   try {
     const apiKey = await fs
       .readFile(path.join(process.cwd(), "config.json"), "utf8")
-      .then((data) => JSON.parse(data).apiKey);
+      .then((data) => JSON.parse(data).apis.googlePlaces);
+
+    console.log("API Key:", apiKey);
 
     // Get the payload from the request
     const { typeOfFood, location, distance } = await req.json();
-    const category = "restaurants";
-    const address = location;
+    const category = "restaurant";
 
-    // Create a search query based on the type of food, location, and distance
-    const searchQuery = `${typeOfFood} within ${distance} miles`;
-    console.log("Search Query:", searchQuery);
-    const response = await fetch(
-      `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${searchQuery}&category=${category}&address=${address}&language=en`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Build the query parameters for the Places Text Search API
+    const textQuery = `${typeOfFood} near ${location}`;
+    const radius = Math.min(distance * 1609.34, 50000); // Convert miles to meters (max 50,000m for Places API)
+    const url = "https://places.googleapis.com/v1/places:searchText";
 
-    const { data } = await response.json();
+    // Fetch results from the Places API
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": apiKey,
+        "X-Goog-FieldMask":
+          "places.name,places.displayName,places.location,places.businessStatus,places.priceLevel,places.rating",
+      },
+      body: JSON.stringify({
+        textQuery,
+        includedType: category,
+        maxResultCount: 5,
+      }),
+    });
 
-    // Check if data array is empty
-    if (!data || data.length === 0) {
-      console.warn("No results found for the given query.");
-      return NextResponse.json(
-        {
-          error: "No restaurants found matching your criteria.",
-        },
-        { status: 404 }
-      );
+    const { places } = await res.json();
+
+    if (places.length) {
+      console.log("Places:", places);
+    } else {
+      console.log("No results");
     }
 
-    // Select a random restaurant from the results
-    const randomIndex = Math.floor(Math.random() * data.length);
-    const randomPick = data[randomIndex];
-    const id = randomPick.location_id;
-
     return NextResponse.json({
-      message: `${randomPick.name}`,
-      data: randomPick,
+      message: "Recommendation received!",
+      data: {
+        places,
+      },
     });
   } catch (error) {
     console.error("Error in /get_info:", error);
