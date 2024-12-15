@@ -22,8 +22,11 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
     }
-  ).then((res) => res.json());
-  console.log("DATA:");
-  console.log(data);
+  ).then((res) =>
+    res
+      .json()
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err))
+  );
   return Response.json({ data });
 }
