@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import RecommendBtn from "@/app/components/RecommendBtn";
+import Recommendation from "@/app/components/Recommendation";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -39,7 +39,7 @@ export default function Home() {
         <Link href="/description">View Details</Link>
       </button>
       <br></br>
-      <RecommendBtn />
+      <Recommendation />
       <br></br>
       <button>
         <Link href="/user_settings">Change User Preferences</Link>
