@@ -27,6 +27,32 @@ export async function POST(req: Request) {
 
   const randomIndex = Math.floor(Math.random() * data.length);
   const randomPick = data[randomIndex];
+  const id = randomPick.location_id;
+  console.log(typeof id);
+  try {
+      const response = await fetch("/write_to_db", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          typeOfFood,
+          location,
+          distance,
+          id
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result.message); // Success message
+      } else {
+        const error = await response.json();
+        console.error("Error:", error.error);
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
   return NextResponse.json({
       message: `${randomPick.name}`,
       data: randomPick,

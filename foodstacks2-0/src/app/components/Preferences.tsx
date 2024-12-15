@@ -8,10 +8,12 @@ const Preferences = () => {
   const [typeOfFood, setTypeOfFood] = useState("");
   const [location, setLocation] = useState("");
   const [distance, setDistance] = useState(1);
+  const [location_id, setLocationID] = useState("");
   const [data, setData] = useState<{
     typeOfFood: string;
     location: string;
     distance: number;
+    location_id: string;
   } | null>(null);
   const [isLoading, setLoading] = useState(true);
 
@@ -23,6 +25,7 @@ const Preferences = () => {
         setTypeOfFood(data.typeOfFood || ""); // Set initial state from fetched data
         setLocation(data.location || ""); // Set initial state from fetched data
         setDistance(data.distance || 1); // Set initial state from fetched data
+        setLocationID(data.location_id || "");
         setLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -47,6 +50,7 @@ const Preferences = () => {
           typeOfFood,
           location,
           distance,
+          location_id
         }),
       });
 

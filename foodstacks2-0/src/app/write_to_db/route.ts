@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   try {
     // Parse the JSON body from the request
     const body = await request.json();
-    const { typeOfFood, location, distance } = body;
+    const { typeOfFood, location, distance, location_id } = body;
 
     // Define the path to the database file
     const filePath = path.join(process.cwd(), "db.json");
@@ -28,6 +28,7 @@ export async function POST(request: Request) {
       typeOfFood,
       location,
       distance,
+      location_id
     };
 
     // Write updated data back to the file
