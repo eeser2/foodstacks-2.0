@@ -33,8 +33,12 @@ const Preferences = () => {
 
   const router = useRouter();
 
-  const handleSliderChange = (value: number) => {
-    setDistance(value);
+  const handleSliderChange = (value: number | number[]) => {
+    if (Array.isArray(value)) {
+      setDistance(value[0]);
+    } else {
+      setDistance(value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,7 +54,7 @@ const Preferences = () => {
           typeOfFood,
           location,
           distance,
-          location_id
+          location_id,
         }),
       });
 
