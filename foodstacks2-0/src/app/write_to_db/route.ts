@@ -11,6 +11,14 @@ export async function POST(request: Request) {
     // Define the path to the database file
     const filePath = path.join(process.cwd(), "db.json");
 
+    // Ensure the file exists
+    try {
+      await fs.access(filePath);
+    } catch {
+      // Create the file if it doesn't exist
+      await fs.writeFile(filePath, JSON.stringify([]));
+    }
+
     // Read existing data from the file
     const existingData = JSON.parse(await fs.readFile(filePath, "utf8"));
 
