@@ -5,55 +5,30 @@ import path from "path";
 export async function POST(req: Request) {
   try {
     const apiKey = await fs
-    .readFile(path.join(process.cwd(), "config.json"), "utf8")
-    .then((data) => JSON.parse(data).apiKey);
+      .readFile(path.join(process.cwd(), "config.json"), "utf8")
+      .then((data) => JSON.parse(data).apiKey);
     // Get the payload from the request
-  const { typeOfFood, location, distance } = await req.json();
-  const category = "restaurants";
-  const address = location;
-  // Create a search query based on the type of food, location, and distance
-  const searchQuery = `${typeOfFood} near ${location} within ${distance}`;
-  const response = await fetch(
-    `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${searchQuery}&category=${category}&address=${address}&language=en`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-
-  const { data } = await response.json();
-
-  const randomIndex = Math.floor(Math.random() * data.length);
-  const randomPick = data[randomIndex];
-  const id = randomPick.location_id;
-  console.log(typeof id);
-  try {
-      const response = await fetch("/write_to_db", {
-        method: "POST",
+    const { typeOfFood, location, distance } = await req.json();
+    const category = "restaurants";
+    const address = location;
+    // Create a search query based on the type of food, location, and distance
+    const searchQuery = `${typeOfFood} near ${location} within ${distance}`;
+    const response = await fetch(
+      `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${searchQuery}&category=${category}&address=${address}&language=en`,
+      {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          typeOfFood,
-          location,
-          distance,
-          id
-        }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result.message); // Success message
-      } else {
-        const error = await response.json();
-        console.error("Error:", error.error);
       }
-    } catch (error) {
-      console.error("Error submitting data:", error);
-    }
-  return NextResponse.json({
+    );
+
+    const { data } = await response.json();
+
+    const randomIndex = Math.floor(Math.random() * data.length);
+    const randomPick = data[randomIndex];
+    const id = randomPick.location_id;
+    return NextResponse.json({
       message: `${randomPick.name}`,
       data: randomPick,
     });

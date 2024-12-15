@@ -11,7 +11,6 @@ export default function RecommendBtn() {
     setIsLoading(true);
     setError(null);
     setRecommendation(null);
-
     try {
       // Step 1: Fetch user preferences from the `get_preferences` route
       const preferencesResponse = await fetch("/get_preferences");
@@ -40,6 +39,28 @@ export default function RecommendBtn() {
 
       // Set the recommendation result
       setRecommendation(info.message || "Recommendation received!");
+
+      // Step 3: Add the location ID to the database
+      const locationId = info.data.location_id;
+      console.log("Location ID:", locationId);
+      const addLocationResponse = await fetch("/write_to_db", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          typeOfFood: preferences.typeOfFood,
+          location: preferences.location,
+          distance: preferences.distance,
+          location_id: locationId,
+        }),
+      });
+
+      if (!addLocationResponse.ok) {
+        throw new Error("Failed to add location to database.");
+      }
+
+      console.log("Added location to database:", location);
     } catch (err) {
       console.error(err);
       setError(
