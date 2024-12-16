@@ -36,15 +36,16 @@ export default function Recommendation() {
         throw new Error("Failed to get recommendation.");
       }
 
-      const info = await infoResponse.json();
-      console.log("Received recommendation:", info);
+      const res = await infoResponse.json();
+      console.log("Received data:", res);
+      console.log("Received recommendation:", res.message);
 
       // Set the recommendation result
-      setRecommendation(info.message || "Recommendation received!");
+      setRecommendation(res.message || "Recommendation received!");
 
+      const restaurant = res.data.randomRestaurant;
       // Step 3: Add the location ID to the database
-      const locationId = info.data.location_id;
-      console.log("Location ID:", locationId);
+      const location_name = restaurant.name;
       const addLocationResponse = await fetch("/write_to_db", {
         method: "POST",
         headers: {
@@ -54,7 +55,7 @@ export default function Recommendation() {
           typeOfFood: preferences.typeOfFood,
           location: preferences.location,
           distance: preferences.distance,
-          location_id: locationId,
+          location_name: location_name,
         }),
       });
 
@@ -62,16 +63,24 @@ export default function Recommendation() {
         throw new Error("Failed to add location to database.");
       }
 
-      console.log("Added location to database:", location);
-
       // Step 4: Fetch the image of the recommended restaurant
+
+      const photos = restaurant.photos;
+
+      // Choose a random photo from the list
+      const randomIndex = Math.floor(Math.random() * photos.length);
+      const photo = photos[randomIndex];
+      const photoName = photo.name;
+
       const imageResponse = await fetch("/get_restaurant_img", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          location_id: locationId,
+          name: photoName,
+          maxHeightPx: 1000,
+          maxWidthPx: 1000,
         }),
       });
 
@@ -80,7 +89,6 @@ export default function Recommendation() {
       }
 
       const image = await imageResponse.json();
-      console.log("Received image:", image);
 
       // Set the image URL
       setImageSrc(image.imageSrc);
