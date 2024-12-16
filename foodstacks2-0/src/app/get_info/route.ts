@@ -16,7 +16,6 @@ export async function POST(req: Request) {
 
     // Build the query parameters for the Places Text Search API
     const textQuery = `${typeOfFood} near ${location}`;
-    const radius = Math.min(distance * 1609.34, 50000); // Convert miles to meters (max 50,000m for Places API)
     const url = "https://places.googleapis.com/v1/places:searchText";
 
     // Fetch results from the Places API
