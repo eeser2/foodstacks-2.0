@@ -6,27 +6,34 @@ export async function POST(req: Request) {
   try {
     const apiKey = await fs
       .readFile(path.join(process.cwd(), "config.json"), "utf8")
-      .then((data) => JSON.parse(data).apiKey);
-    // Get the payload from the request
-    const { location_id } = await req.json();
-    // Create a search query based on the type of food, location, and distance
-    const response = await fetch(
-      `https://api.content.tripadvisor.com/api/v1/location/${location_id}/photos?key=${apiKey}&language=en`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+      .then((data) => JSON.parse(data).apis.googlePlaces);
 
-    const { data } = await response.json();
+    console.log("API Key:", apiKey);
+
+    // Get the payload from the request
+    const { name, maxHeightPx, maxWidthPx } = await req.json();
+    console.log("Location Name:", name);
+    console.log("Max Height:", maxHeightPx);
+    console.log("Max Width:", maxWidthPx);
+
+    // Create a search query based on the type of food, location, and distance
+    const url = `https://places.googleapis.com/v1/${name}/media?key=${apiKey}&maxHeightPx=${maxHeightPx}&maxWidthPx=${maxWidthPx}`;
+    console.log("URL:", url);
+    const response = await fetch(url, {
+      method: "GET",
+    });
+
+    const arrayBuffer = await response.arrayBuffer();
+    const base64Image = Buffer.from(arrayBuffer).toString("base64");
     // Data contains some attributes and then an "images" object.
     // We want to get images.medium.url from the data object.
-    const randomIndex = Math.floor(Math.random() * data.length);
-    const randomPick = data[randomIndex];
-    console.log("Random Pick:", randomPick);
-    const imageSrc = randomPick.images.medium.url;
+
+    const imageSrc = `data:image/jpeg;base64,${base64Image}`;
+    console.log("Image Src:", imageSrc);
+    // const randomIndex = Math.floor(Math.random() * data.length);
+    // const randomPick = data[randomIndex];
+    // console.log("Random Pick:", randomPick);
+    // const imageSrc = randomPick.images.medium.url;
     return NextResponse.json({
       imageSrc,
     });
