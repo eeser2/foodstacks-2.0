@@ -12,7 +12,6 @@ export async function POST(req: Request) {
 
     // Get the payload from the request
     const { typeOfFood, location, distance } = await req.json();
-    const category = "restaurant";
 
     // Build the query parameters for the Places Text Search API
     const textQuery = `${typeOfFood} near ${location}`;
@@ -24,12 +23,10 @@ export async function POST(req: Request) {
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": apiKey,
-        "X-Goog-FieldMask":
-          "places.name,places.displayName,places.location,places.businessStatus,places.priceLevel,places.rating",
+        "X-Goog-FieldMask": "*",
       },
       body: JSON.stringify({
         textQuery,
-        includedType: category,
         maxResultCount: 5,
       }),
     });
@@ -42,10 +39,15 @@ export async function POST(req: Request) {
       console.log("No results");
     }
 
+    // Pick a random place from the results
+    const randomIndex = Math.floor(Math.random() * places.length);
+    const randomRestaurant = places[randomIndex];
+    console.log("Random Pick:", randomRestaurant);
+
     return NextResponse.json({
       message: "Recommendation received!",
       data: {
-        places,
+        randomRestaurant,
       },
     });
   } catch (error) {
