@@ -18,7 +18,6 @@ export async function POST(req: Request) {
 
     // Create a search query based on the type of food, location, and distance
     const url = `https://places.googleapis.com/v1/${name}/media?key=${apiKey}&maxHeightPx=${maxHeightPx}&maxWidthPx=${maxWidthPx}`;
-    console.log("URL:", url);
     const response = await fetch(url, {
       method: "GET",
     });
@@ -29,7 +28,6 @@ export async function POST(req: Request) {
     // We want to get images.medium.url from the data object.
 
     const imageSrc = `data:image/jpeg;base64,${base64Image}`;
-    console.log("Image Src:", imageSrc);
     // const randomIndex = Math.floor(Math.random() * data.length);
     // const randomPick = data[randomIndex];
     // console.log("Random Pick:", randomPick);
