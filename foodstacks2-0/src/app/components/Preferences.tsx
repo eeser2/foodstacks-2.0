@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Slider } from "@nextui-org/slider";
 import { useRouter } from "next/navigation";
 
 const Preferences = () => {

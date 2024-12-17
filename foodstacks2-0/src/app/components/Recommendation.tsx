@@ -105,7 +105,7 @@ export default function Recommendation() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       <button
         onClick={handleRecommend}
         disabled={isLoading}
