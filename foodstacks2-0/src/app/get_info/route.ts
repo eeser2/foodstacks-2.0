@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     console.log("API Key:", apiKey);
 
     // Get the payload from the request
-    const { typeOfFood, location, distance } = await req.json();
+    const { typeOfFood, location } = await req.json();
 
     // Build the query parameters for the Places Text Search API
     const textQuery = `${typeOfFood} near ${location}`;
