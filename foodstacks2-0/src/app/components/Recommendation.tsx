@@ -5,6 +5,7 @@ import React, { useState } from "react";
 export default function Recommendation() {
   const [isLoading, setIsLoading] = useState(false);
   const [recommendation, setRecommendation] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string>(""); // Store the restaurant image URL
 
@@ -21,8 +22,6 @@ export default function Recommendation() {
       }
       const preferences = await preferencesResponse.json();
 
-      console.log("Fetched preferences:", preferences);
-
       // Step 2: Use preferences to send a POST request to the `get_info` route
       const infoResponse = await fetch("/get_info", {
         method: "POST",
@@ -37,7 +36,6 @@ export default function Recommendation() {
       }
 
       const res = await infoResponse.json();
-      console.log("Received data:", res);
       console.log("Received recommendation:", res.message);
 
       // Set the recommendation result
@@ -45,6 +43,10 @@ export default function Recommendation() {
 
       const restaurant = res.data.randomRestaurant;
       // Step 3: Add the location ID to the database
+      console.log("Restaurant:", restaurant);
+      const displayName = restaurant.displayName.text;
+      setName(displayName);
+      console.log("Restaurant Name:", displayName);
       const location_name = restaurant.name;
       const addLocationResponse = await fetch("/write_to_db", {
         method: "POST",
@@ -116,6 +118,7 @@ export default function Recommendation() {
       {recommendation && (
         <div className="mt-2 text-green-600">{recommendation}</div>
       )}
+      {name && <div className="mt-2 text-cyan-600">{name}</div>}
       {error && <div className="mt-2 text-red-600">{error}</div>}
       {/* Render the image only when an image URL is set */}
       {imageSrc && (
