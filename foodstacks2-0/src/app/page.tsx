@@ -23,10 +23,11 @@ export default function Home() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-200 to-green-500">
+    <body className="m-0 p-0">
+    <div className="min-h-screen bg-gradient-to-b from-purple-200 to-purple-500">
       <main className="flex flex-col items-center justify-center">
         {/* Title Section */}
-        <div className="text-center text-5xl font-bold border-3 border-blue-700 text-purple-700 p-4 mt-10">
+        <div className="text-center text-5xl font-bold text-purple-700 p-4 mt-10">
           Welcome to Foodstacks!
         </div>
 
@@ -46,10 +47,11 @@ export default function Home() {
         <br />
 
         {/* Link Section */}
-        <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4">
+        <button className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">
           <Link href="/user_settings"> Set Your Preferences!</Link>
         </button>
       </main>
     </div>
+    </body>
   );
 }
