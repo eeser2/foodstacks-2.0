@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Slider } from "@nextui-org/slider";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const Preferences = () => {
@@ -59,22 +59,52 @@ const Preferences = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show a loading state while data is being fetched
+    return <div className="bg-purple-100 text-purple-700">Loading...</div>; // Show a loading state while data is being fetched
   }
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen flex items-center justify-center">
+<main>
+  <div className="bg-purple-100 min-h-screen">
+    {/* Title Section */}
+    <div className="text-5xl text-purple-700 text-center p-10 font-bold">
+      User Preferences
+    </div>
+
+    {/* Back Button */}
+    <div className="top-0 left-0 mt-10 ml-5 absolute">
+      <Link
+        href="/"
+        className="inline-flex items-center border border-purple-300 px-3 py-1.5 rounded-md text-purple-500 hover:bg-indigo-50"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="h-6 w-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M7 16l-4-4m0 0l4-4m-4 4h18"
+          ></path>
+        </svg>
+        <span className="ml-1 font-bold text-lg">Back</span>
+      </Link>
+    </div>
+
+    {/* Form Section */}
+    <div className="p-4 bg-purple-100 flex items-start justify-center">
       <form
         action="/"
         method="post"
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-6 rounded shadow-md"
+        className="space-y-4 bg-white p-10 w-full max-w-lg rounded-lg shadow-lg"
       >
+        {/* Type of Food */}
         <div className="space-y-2">
-          <label
-            htmlFor="typeOfFood"
-            className="block text-gray-700 font-medium"
-          >
+          <label htmlFor="typeOfFood" className="block text-gray-700 font-bold">
             Type of food:
           </label>
           <input
@@ -83,11 +113,13 @@ const Preferences = () => {
             name="typeOfFood"
             value={typeOfFood}
             onChange={(e) => setTypeOfFood(e.target.value)}
-            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:text-blue-700"
+            className="w-full px-4 py-2 border rounded outline-none focus:ring-2 focus:ring-purple-500 text-purple-700"
           />
         </div>
+
+        {/* Location */}
         <div className="space-y-2">
-          <label htmlFor="location" className="block text-gray-700 font-medium">
+          <label htmlFor="location" className="block text-gray-700 font-bold">
             Location:
           </label>
           <input
@@ -96,14 +128,23 @@ const Preferences = () => {
             name="location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:text-blue-700"
+            className="w-full px-4 py-2 border rounded outline-none focus:ring-2 focus:ring-purple-500 text-purple-700"
           />
         </div>
-        <button type="submit" className="text-black btn btn-primary">
-          Save
-        </button>
+
+        {/* Submit Button */}
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="text-white bg-purple-600 hover:bg-purple-700 border-none px-6 py-2 rounded-md mt-5"
+          >
+            Save
+          </button>
+        </div>
       </form>
     </div>
+  </div>
+</main>
   );
 };
 

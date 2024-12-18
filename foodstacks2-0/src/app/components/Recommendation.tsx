@@ -105,12 +105,12 @@ export default function Recommendation() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       <button
         onClick={handleRecommend}
         disabled={isLoading}
         className={`px-4 py-2 text-white ${
-          isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+          isLoading ? "bg-gray-400" : "bg-purple-500 hover:bg-purple-600"
         } rounded`}
       >
         {isLoading ? "Loading..." : "Recommend"}
@@ -118,14 +118,14 @@ export default function Recommendation() {
       {recommendation && (
         <div className="mt-2 text-green-600">{recommendation}</div>
       )}
-      {name && <div className="mt-2 text-cyan-600">{name}</div>}
+      {name && <div className="mt-10 text-purple-600 font-bold text-3xl">{name}</div>}
       {error && <div className="mt-2 text-red-600">{error}</div>}
       {/* Render the image only when an image URL is set */}
       {imageSrc && (
         <img
           src={imageSrc}
           alt="Recommended Restaurant"
-          className="mt-4 w-64 h-64 object-cover rounded"
+          className="mt-4 w-64 h-64 object-cover rounded border-5 border-purple-300"
         />
       )}
     </div>
