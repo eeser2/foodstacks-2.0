@@ -6,6 +6,7 @@ export default function Recommendation() {
   const [isLoading, setIsLoading] = useState(false);
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
+  const [address, setAddress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string>(""); // Store the restaurant image URL
 
@@ -44,9 +45,15 @@ export default function Recommendation() {
       const restaurant = res.data.randomRestaurant;
       // Step 3: Add the location ID to the database
       console.log("Restaurant:", restaurant);
+
       const displayName = restaurant.displayName.text;
       setName(displayName);
       console.log("Restaurant Name:", displayName);
+
+      const address = restaurant.formattedAddress;
+      setAddress(address);
+      console.log("Restaurant Address:", address);
+
       const location_name = restaurant.name;
       const addLocationResponse = await fetch("/write_to_db", {
         method: "POST",
@@ -118,7 +125,10 @@ export default function Recommendation() {
       {recommendation && (
         <div className="mt-2 text-green-600">{recommendation}</div>
       )}
-      {name && <div className="mt-10 text-purple-600 font-bold text-3xl">{name}</div>}
+      {name && (
+        <div className="mt-10 text-purple-600 font-bold text-3xl">{name}</div>
+      )}
+      {address && <div className="mt-2 text-purple-800">{address}</div>}
       {error && <div className="mt-2 text-red-600">{error}</div>}
       {/* Render the image only when an image URL is set */}
       {imageSrc && (
