@@ -1,5 +1,6 @@
 # JSON files
-*.json
+config.json
+db.json
 
 # Logs
 logs
